@@ -1,0 +1,11 @@
+{
+  "name": "react-social-media-website",
+  "version": "1.0.0",
+  "description": "A social media app created using mongodb, express, reactjs, node and graphql.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Aditya Kumar Mandal",
+  "license": "ISC"
+}
