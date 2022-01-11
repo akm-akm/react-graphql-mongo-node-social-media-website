@@ -1,4 +1,5 @@
 const User = require("../../model/user");
+const validate = require('validator')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 module.exports = {
@@ -14,13 +15,19 @@ module.exports = {
   },
   Mutation: {
     login: async (_, { email, password }) => {
+
+      if (!validate.isEmail(email.trim()) || password.trim() === "") {
+        throw new Error("Please enter all fields");
+      }
       const user = await User.findOne({ email });
+     
+     
       if (!user) {
-        throw new Error("User not found");
+        throw new Error("Invalid email id.");
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
-        throw new Error("Password is incorrect");
+        throw new Error("Invalid password.");
       }
       const token = jwt.sign(
         { id: user.id, email: user.email, username: user.username },
@@ -38,14 +45,25 @@ module.exports = {
       };
     },
 
-    register: async (_, { username, email, password }) => {
+    register: async (_, { name, age, username, email, password }) => {
+      if (
+        name.trim() === "" ||
+        age.trim() === "" ||
+        username.trim() === "" ||
+        !validate.isEmail(email.trim()) ||
+        password.trim() === ""
+      ) {
+        throw new Error("Please enter all fields correctly");
+      }
       const user = await User.findOne({ email });
       if (user) {
-        throw new Error("User already exists");
+        throw new Error("Email already exists");
       }
 
       const newUser = new User({
         username,
+        name,
+        age,
         email,
         password,
         createdAt: new Date().toISOString(),
