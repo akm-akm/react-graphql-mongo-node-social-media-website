@@ -10,12 +10,14 @@
   "license": "ISC",
   "dependencies": {
     "-": "^0.0.1",
+    "apollo-link-context": "^1.0.20",
     "apollo-server": "^3.6.1",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "g": "^2.0.1",
     "graphql": "^16.2.0",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
     "mongoose": "^6.1.5",
     "validator": "^13.7.0"
   }

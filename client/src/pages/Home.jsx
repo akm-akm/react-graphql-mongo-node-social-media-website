@@ -1,5 +1,5 @@
-import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useState } from "react";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 import Post from "./post";
 import { Container, Typography } from "@mui/material";
@@ -25,6 +25,7 @@ import Stack from "@mui/material/Stack";
 import { grey } from "@mui/material/colors";
 import LocationOn from "@mui/icons-material/LocationOn";
 import Edit from "@mui/icons-material/Edit";
+import { AuthContext } from "../context/AuthContext";
 
 const FETCH_POSTS_QUERY = gql`
   {
@@ -51,17 +52,31 @@ const FETCH_POSTS_QUERY = gql`
 `;
 
 export default function Home() {
-  const [value, setValue] = React.useState("");
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
+  const [error, seterror] = React.useState(undefined);
+  const addNewPost = (event) => {
+    setpost({ ...post, body: event.target.value });
   };
-
-  const { loading, error, data } = useQuery(FETCH_POSTS_QUERY);
-  if (loading) return <p>Loading...</p>;
-
-  return (
-    <Container maxWidth="sm">
+  const [post, setpost] = useState({
+    body: "",
+  });
+  const [addPost, { loadingCreatePost }] = useMutation(CREATE_POST, {
+    update(proxy, { data: { createPost: post } }) {
+      const data = proxy.readQuery({ query: FETCH_POSTS_QUERY });
+      data.getPosts = [post, ...data.getPosts];
+      proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
+      setpost({ body: "" });
+    },
+    onError(err) {
+      console.log(typeof { post });
+      seterror(err.graphQLErrors[0]);
+      console.log(error);
+    },
+    variables: post,
+  });
+  const { user } = React.useContext(AuthContext);
+  <Card>
+    <Box sx={{ p: 2, display: "flex" }}>
+      {" "}
       <Card>
         <Box sx={{ p: 2, display: "flex" }}>
           <Avatar variant="rounded" src="avatar1.jpg" />
@@ -82,7 +97,80 @@ export default function Home() {
           justifyContent="space-between"
           sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         ></Stack>
+      </Card>{" "}
+      <Card>
+        <Box sx={{ p: 2, display: "flex" }}>
+          <Avatar variant="rounded" src="avatar1.jpg" />
+          <Stack spacing={0.5}>
+            <Typography fontWeight={700}>Michael Scott</Typography>{" "}
+            <Card>
+              <Box sx={{ p: 2, display: "flex" }}>
+                <Avatar variant="rounded" src="avatar1.jpg" />
+                <Stack spacing={0.5}>
+                  <Typography fontWeight={700}>Michael Scott</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
+                  </Typography>
+                </Stack>
+                <IconButton>
+                  <Edit sx={{ fontSize: 14 }} />
+                </IconButton>
+              </Box>
+              <Divider />
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ px: 2, py: 1, bgcolor: "background.default" }}
+              ></Stack>
+            </Card>
+            <Typography variant="body2" color="text.secondary">
+              <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
+            </Typography>
+          </Stack>
+          <IconButton>
+            <Edit sx={{ fontSize: 14 }} />
+          </IconButton>
+        </Box>
+        <Divider />
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          sx={{ px: 2, py: 1, bgcolor: "background.default" }}
+        ></Stack>
       </Card>
+      <Avatar variant="rounded" src="avatar1.jpg" />
+      <Stack spacing={0.5}>
+        <Typography fontWeight={700}>Michael Scott</Typography>
+        <Typography variant="body2" color="text.secondary">
+          <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
+        </Typography>
+      </Stack>
+      <IconButton>
+        <Edit sx={{ fontSize: 14 }} />
+      </IconButton>
+    </Box>
+    <Divider />
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent="space-between"
+      sx={{ px: 2, py: 1, bgcolor: "background.default" }}
+    ></Stack>
+  </Card>;
+
+  const uploadNewPost = (event) => {
+    console.log(post);
+    event.preventDefault();
+    addPost();
+  };
+
+  const { loading, errorfetch, data } = useQuery(FETCH_POSTS_QUERY);
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <Container maxWidth="sm">
       <div>
         <Card
           sx={{
@@ -98,8 +186,8 @@ export default function Home() {
                 P
               </Avatar>
             }
-            title="Aditya Kumar Mandal"
-            subheader="AKM"
+            title={user.name}
+            subheader={user.username}
           />
           <Box
             component="form"
@@ -114,9 +202,10 @@ export default function Home() {
                 id="outlined-multiline-flexible"
                 label="Write Something"
                 multiline
+                name="body"
                 maxRows={9}
-                value={value}
-                onChange={handleChange}
+                value={post.body}
+                onChange={addNewPost}
               />
             </div>
             <Stack
@@ -125,7 +214,14 @@ export default function Home() {
                 float: "right",
               }}
             >
-              <Button mt={100} variant="contained" endIcon={<SendIcon />}>
+              <Button
+                mt={100}
+                onClick={uploadNewPost}
+                type="submit"
+                disabled={post.body.trim() === ""}
+                variant="contained"
+                endIcon={<SendIcon />}
+              >
                 Post
               </Button>
             </Stack>
@@ -152,3 +248,26 @@ export default function Home() {
     </Container>
   );
 }
+
+const CREATE_POST = gql`
+  mutation CreatePost($body: String!) {
+    createPost(body: $body) {
+      id
+      username
+      body
+      createdAt
+      comment {
+        id
+        body
+        username
+        createdAt
+      }
+      commentCount
+      like {
+        id
+        username
+      }
+      likeCount
+    }
+  }
+`;

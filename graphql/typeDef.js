@@ -54,10 +54,14 @@ module.exports = gql`
     login(email: String!, password: String!): User!
     logout(token: String!): Boolean!
     createPost(body: String!): Post!
-    deletePost(postid: ID!): Boolean!
+    deletePost(postid: ID!): Post!
     createComment(postID: ID!, body: String!): Post
     deleteComment(commentID: ID!, postID: ID!): Post!
     createLike(postID: ID!): Post!
     subscrption: Boolean!
+    sendFriendRequest(username: String!): User!
+    rejectFriendRequest(username: String!): User!
+    acceptFriendRequest(username: String!): User!
+    blockUser(username: String!): User!
   }
 `;

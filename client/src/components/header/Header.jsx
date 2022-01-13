@@ -102,7 +102,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={logout}>Logout</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -159,8 +159,6 @@ export default function Header() {
     </Menu>
   );
 
-
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -181,89 +179,95 @@ export default function Header() {
               AKM
             </Link>
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search people"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <Button
-              name="home"
-              variant={activeItem === "home" ? "contained" : "outlined"}
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Home
-            </Button>
-            <Button
-              name="Login"
-              onClick={handleCloseNavMenu}
-              variant={activeItem === "friends" ? "contained" : "outlined"}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                }}
-                to="/login"
-              >
-                Login
-              </Link>
-            </Button>
-            <Button
-              name="chat"
-              variant={activeItem === "chat" ? "contained" : "outlined"}
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              <Link
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                }}
-                to="/register"
-              >
-                Register
-              </Link>
-            </Button>
-          </Box>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
+          {user ? (
+            <>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search people"
+                  inputProps={{ "aria-label": "search" }}
+                />
+              </Search>
+              <Box sx={{ flexGrow: 1 }} />
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                <Button
+                  name="home"
+                  variant={activeItem === "home" ? "contained" : "outlined"}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  Home
+                </Button>
+                <Button
+                  name="Login"
+                  onClick={handleCloseNavMenu}
+                  variant={activeItem === "friends" ? "contained" : "outlined"}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                      color: "white",
+                    }}
+                    to="/login"
+                  >
+                    Login
+                  </Link>
+                </Button>
+                <Button
+                  name="chat"
+                  variant={activeItem === "chat" ? "contained" : "outlined"}
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                >
+                  <Link
+                    style={{
+                      textDecoration: "none",
+                      color: "white",
+                    }}
+                    to="/register"
+                  >
+                    Register
+                  </Link>
+                </Button>
+              </Box>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <IconButton
+                  size="large"
+                  aria-label="show 4 new mails"
+                  color="inherit"
+                >
+                  <Badge badgeContent={4} color="error">
+                    <MailIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                >
+                  <Badge badgeContent={17} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+            </>
+          ) : (
+            ""
+          )}
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
