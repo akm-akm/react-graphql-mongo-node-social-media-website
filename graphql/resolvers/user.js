@@ -40,8 +40,6 @@ module.exports = {
           expiresIn: "10d",
         }
       );
-      //   user.token = user.tokens.concat({ token });
-      //    const newuser
       return {
         ...user._doc,
         id: user.id,

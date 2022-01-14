@@ -4,7 +4,8 @@
   "description": "A social media app created using mongodb, express, reactjs, node and graphql.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
   },
   "author": "Aditya Kumar Mandal",
   "license": "ISC",
