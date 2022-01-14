@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [activeItem, setActiveItem] = React.useState(null);
+  const [activeItem] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -202,19 +202,12 @@ export default function Header() {
                 </Button>
                 <Button
                   name="Login"
-                  onClick={handleCloseNavMenu}
+               
                   variant={activeItem === "friends" ? "contained" : "outlined"}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      color: "white",
-                    }}
-                    to="/login"
-                  >
-                    Login
-                  </Link>
+                
+                  Login
                 </Button>
                 <Button
                   name="chat"

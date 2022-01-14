@@ -42,6 +42,7 @@ export default function Login() {
       history.push("/");
     },
     onError(err) {
+      console.log(err)
       seterror(err.graphQLErrors[0].message);
       setOpen(true);
     },
