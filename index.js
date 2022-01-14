@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const typeDefs = require("./graphql/typeDef");
 const resolvers = require("./graphql/resolvers");
-const port = process.env.PORT || 5100;
+const port = process.env.PORT || 5200;
 const server = new ApolloServer({
   typeDefs,
   resolvers,

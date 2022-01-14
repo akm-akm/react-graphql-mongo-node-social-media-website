@@ -118,7 +118,7 @@ module.exports = {
       await suser.save();
       return suser;
     },
-    
+
     register: async (_, { name, age, username, email, password }) => {
       if (
         name.trim() === "" ||

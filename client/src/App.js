@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./utils/protectedRoute";
+import AuthRoute from "./utils/authRoute";
 
 function App() {
   return (
@@ -14,9 +16,9 @@ function App() {
       <Router>
         <Header />
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
+          <ProtectedRoute exact path="/" component={Home} />
+          <AuthRoute exact path="/login" component={Login} />
+          <AuthRoute exact path="/register" component={Register} />
         </Switch>
       </Router>
     </AuthProvider>

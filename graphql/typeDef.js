@@ -28,7 +28,6 @@ module.exports = gql`
     name: String!
     email: String!
     age: String!
-    password: String!
     createdAt: String!
     token: String!
   }

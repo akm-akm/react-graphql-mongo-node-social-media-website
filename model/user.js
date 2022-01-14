@@ -1,52 +1,93 @@
 const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
-  name: String,
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        minlength: 2,
-        lowercase: true
+  name: {
+    type: String,
+    required: true,
+    trim: true,
   },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true
-        
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    minlength: 2,
+    lowercase: true,
   },
-  password: String,
-  about: String,
-  dOB: String,
-  age: Number,
-  createdAt: String,
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  about: {
+    type: String,
+    trim: true,
+  },
+  dOB: {
+    type: String,
+    trim: true,
+  },
+  createdAt: {
+    type: String,
+    trim: true,
+  },
   token: [
     {
-      token: String,
+      token: {
+        type: String,
+        trim: true,
+      },
     },
   ],
   friendList: [
     {
-      createdAt: Date.now(),
-      username: String,
+      createdAt: {
+        type: String,
+        trim: true,
+      },
+      username: {
+        type: String,
+      },
     },
   ],
   pendingFriendRequest: [
     {
-      createdAt: Date.now(),
-      username: String,
+      createdAt: {
+        type: String,
+        trim: true,
+      },
+      username: {
+        type: String,
+      },
     },
   ],
   blockedUser: [
     {
-      username: String,
+      username: {
+        type: String,
+      },
     },
   ],
-  profilePicture: Buffer,
-  coverPicture: Buffer,
+  profilePicture: {
+    type: Buffer,
+  },
+  coverPicture: {
+    type: Buffer,
+  },
 });
+
+userSchema.methods.toJSON = function () {
+  const user = this.toObject();
+  delete user.password;
+  delete user.tokens;
+  return user;
+};
 
 const User = mongoose.model("User", userSchema);
 

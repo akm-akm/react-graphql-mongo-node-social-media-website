@@ -1,6 +1,6 @@
 import * as React from "react";
 import jwtDecode from "jwt-decode";
-
+import { useHistory } from "react-router-dom";
 const initialState = {
   user: null,
 };
@@ -38,6 +38,8 @@ function authReducer(state, action) {
 }
 
 function AuthProvider(props) {
+const history = useHistory();
+
   const [state, dispatch] = React.useReducer(authReducer, initialState);
   function login(userData) {
     localStorage.setItem("JWTTOKEN", userData.token);
@@ -45,7 +47,6 @@ function AuthProvider(props) {
   }
   function logout() {
     localStorage.removeItem("JWTTOKEN");
-
     dispatch({ type: "LOGOUT" });
   }
   return (

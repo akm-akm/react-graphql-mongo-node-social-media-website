@@ -6,7 +6,7 @@ import { ApolloProvider } from "@apollo/react-hooks";
 import { createHttpLink } from "apollo-link-http";
 const { setContext } = require("apollo-link-context");
 const httpLink = createHttpLink({
-  uri: "http://localhost:5100/graphql",
+  uri: "http://localhost:5200/graphql",
 });
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("JWTTOKEN");
