@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: String,
     trim: true,
+    default: Date.now(),
   },
   token: [
     {
@@ -54,6 +55,7 @@ const userSchema = new mongoose.Schema({
       createdAt: {
         type: String,
         trim: true,
+        default: Date.now(),
       },
       username: {
         type: String,
@@ -65,6 +67,7 @@ const userSchema = new mongoose.Schema({
       createdAt: {
         type: String,
         trim: true,
+        default: Date.now(),
       },
       username: {
         type: String,

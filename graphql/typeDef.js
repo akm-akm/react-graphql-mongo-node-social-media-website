@@ -7,6 +7,9 @@ module.exports = gql`
     username: String!
     createdAt: String!
   }
+  type Username{
+    username: String!
+  }
   type Like {
     id: ID!
     username: String!
@@ -27,7 +30,9 @@ module.exports = gql`
     username: String!
     name: String!
     email: String!
+    friendList: [Username]
     age: String!
+    dOB: String
     createdAt: String!
     password: String!
     token: String!
@@ -42,6 +47,7 @@ module.exports = gql`
     getPosts: [Post]
     getPost(postID: ID!): Post
     getUsers: [User]!
+    getUser(username: String!): User!
   }
   type Mutation {
     register(

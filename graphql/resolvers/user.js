@@ -13,6 +13,14 @@ module.exports = {
         console.log(err);
       }
     },
+    getUser: async (_, {username}) => {
+      try {
+        const user = await User.findOne({ username });
+        return user;
+      } catch (err) {
+        console.log(err);
+      }
+    }
   },
   Mutation: {
     login: async (_, { email, password }) => {

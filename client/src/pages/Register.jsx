@@ -16,7 +16,9 @@ import MuiAlert from "@mui/material/Alert";
 import { Stack } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import { useHistory } from "react-router-dom";
-
+import DateAdapter from "@mui/lab/AdapterDateFns";
+import { DatePicker } from "@mui/lab";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 const theme = createTheme();
 
@@ -27,7 +29,7 @@ export default function Register() {
     email: "",
     password: "",
     name: "",
-    age: "",
+    dOB: "",
   });
   const [error, seterror] = React.useState(undefined);
   const [success, setsuccess] = React.useState(false);
@@ -117,6 +119,15 @@ export default function Register() {
                   label="Username"
                 />
               </Grid>
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                <DatePicker
+                  label="Basic example"
+                  value={value.dOB}
+                  onChange={handleChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+
               <Grid item xs={12}>
                 <TextField
                   autoComplete="given-name"
