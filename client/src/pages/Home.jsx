@@ -70,58 +70,26 @@ export default function Home() {
     variables: post,
   });
   const { user } = React.useContext(AuthContext);
-  <Card>
-    <Box sx={{ p: 2, display: "flex" }}>
-      {" "}
+
+  const uploadNewPost = (event) => {
+    console.log(post);
+    event.preventDefault();
+    addPost();
+  };
+
+  const { loading, errorfetch, data } = useQuery(FETCH_POSTS_QUERY);
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <Container maxWidth="sm">
       <Card>
         <Box sx={{ p: 2, display: "flex" }}>
           <Avatar variant="rounded" src="avatar1.jpg" />
           <Stack spacing={0.5}>
-            <Typography fontWeight={700}>Michael Scott</Typography>
+            <Typography fontWeight={700}>{user.name}</Typography>
             <Typography variant="body2" color="text.secondary">
-              <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
-            </Typography>
-          </Stack>
-          <IconButton>
-            <Edit sx={{ fontSize: 14 }} />
-          </IconButton>
-        </Box>
-        <Divider />
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          sx={{ px: 2, py: 1, bgcolor: "background.default" }}
-        ></Stack>
-      </Card>{" "}
-      <Card>
-        <Box sx={{ p: 2, display: "flex" }}>
-          <Avatar variant="rounded" src="avatar1.jpg" />
-          <Stack spacing={0.5}>
-            <Typography fontWeight={700}>Michael Scott</Typography>{" "}
-            <Card>
-              <Box sx={{ p: 2, display: "flex" }}>
-                <Avatar variant="rounded" src="avatar1.jpg" />
-                <Stack spacing={0.5}>
-                  <Typography fontWeight={700}>Michael Scott</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
-                  </Typography>
-                </Stack>
-                <IconButton>
-                  <Edit sx={{ fontSize: 14 }} />
-                </IconButton>
-              </Box>
-              <Divider />
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ px: 2, py: 1, bgcolor: "background.default" }}
-              ></Stack>
-            </Card>
-            <Typography variant="body2" color="text.secondary">
-              <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
+              <LocationOn sx={{ color: grey[500] }} />
+              {user.username}
             </Typography>
           </Stack>
           <IconButton>
@@ -136,37 +104,7 @@ export default function Home() {
           sx={{ px: 2, py: 1, bgcolor: "background.default" }}
         ></Stack>
       </Card>
-      <Avatar variant="rounded" src="avatar1.jpg" />
-      <Stack spacing={0.5}>
-        <Typography fontWeight={700}>Michael Scott</Typography>
-        <Typography variant="body2" color="text.secondary">
-          <LocationOn sx={{ color: grey[500] }} /> Scranton, PA
-        </Typography>
-      </Stack>
-      <IconButton>
-        <Edit sx={{ fontSize: 14 }} />
-      </IconButton>
-    </Box>
-    <Divider />
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ px: 2, py: 1, bgcolor: "background.default" }}
-    ></Stack>
-  </Card>;
 
-  const uploadNewPost = (event) => {
-    console.log(post);
-    event.preventDefault();
-    addPost();
-  };
-
-  const { loading, errorfetch, data } = useQuery(FETCH_POSTS_QUERY);
-  if (loading) return <p>Loading...</p>;
-
-  return (
-    <Container maxWidth="sm">
       <div>
         <Card
           sx={{

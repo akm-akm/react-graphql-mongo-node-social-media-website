@@ -22,7 +22,7 @@ module.exports = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new Error("Invalid email id.");
+        throw new Error("Invalid email id");
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {

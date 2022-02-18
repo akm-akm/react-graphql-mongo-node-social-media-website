@@ -1,7 +1,7 @@
 {
   "name": "react-social-media-website",
   "version": "1.0.0",
-  "description": "A social media app created using mongodb, express, reactjs, node and graphql.",
+  "description": "A social media app created using mongodb, reactjs, node and graphql.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,12 +10,10 @@
   "author": "Aditya Kumar Mandal",
   "license": "ISC",
   "dependencies": {
-    "-": "^0.0.1",
     "apollo-link-context": "^1.0.20",
     "apollo-server": "^3.6.1",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
-    "g": "^2.0.1",
     "graphql": "^16.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",

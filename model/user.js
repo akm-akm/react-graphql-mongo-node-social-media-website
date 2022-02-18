@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
+  accountPrivacy: {
+    type: String,
+    required: true,
+  },
   password: {
     type: String,
     required: true,
@@ -81,7 +85,6 @@ const userSchema = new mongoose.Schema({
     type: Buffer,
   },
 });
-
 
 const User = mongoose.model("User", userSchema);
 
