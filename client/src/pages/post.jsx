@@ -28,6 +28,7 @@ import { AuthContext } from "../context/AuthContext";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import TheDeleteIcon from "../components/TheDeleteIcon";
+import { Link } from "react-router-dom";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;
@@ -162,7 +163,7 @@ export default function Post({ post }) {
             </Box>
           </Box>
           {post.comment.map((comment, id) => (
-            <Box key={id} sx={{ "& > :not(style)": { m: 1, width: "536px" } }}>
+            <Box key={comment.id} sx={{ "& > :not(style)": { m: 1, width: "536px" } }}>
               <Divider />
               <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                 <AccountCircle
@@ -187,7 +188,7 @@ export default function Post({ post }) {
 
                 {user && user.username === comment.username ? (
                   <IconButton aria-label="like">
-                    <TheDeleteIcon postId={post.id} commentId={id} />
+                    <TheDeleteIcon postId={post.id} commentId={comment.id} />
                   </IconButton>
                 ) : null}
               </Box>

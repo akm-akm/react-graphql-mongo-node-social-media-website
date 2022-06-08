@@ -5,9 +5,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function TheDeleteIcon({ postId, commentId }) {
   const [deletePostOrMutation] = useMutation(DELETE_COMMENT_MUTATION, {
-    update(proxy,r) {
-      console.log(r);
+    update(proxy, r) {
     },
+
     variables: {
       postId,
       commentId,
@@ -19,15 +19,17 @@ export default function TheDeleteIcon({ postId, commentId }) {
     </div>
   );
 }
+
 const DELETE_COMMENT_MUTATION = gql`
   mutation DeleteComment($commentId: ID!, $postId: ID!) {
     deleteComment(commentID: $commentId, postID: $postId) {
-     id
-     commentCount
+      id
+      commentCount
       comment {
-        id
-
         body
+        id
+        createdAt
+        username
       }
     }
   }
