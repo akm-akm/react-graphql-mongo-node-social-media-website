@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/protectedRoute";
 import AuthRoute from "./utils/authRoute";
-
+import Profile from "./pages/profile";
 function App() {
   return (
     <AuthProvider>
@@ -17,6 +17,7 @@ function App() {
         <Header />
         <Switch>
           <ProtectedRoute exact path="/" component={Home} />
+          <ProtectedRoute exact path="/profile/:username" component={Profile} />
           <AuthRoute exact path="/login" component={Login} />
           <AuthRoute exact path="/register" component={Register} />
         </Switch>

@@ -176,7 +176,7 @@ export default function Header() {
               }}
               to="/"
             >
-              AKM
+              React Social
             </Link>
           </Typography>
           {user ? (

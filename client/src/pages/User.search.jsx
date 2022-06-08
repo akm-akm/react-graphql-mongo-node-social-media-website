@@ -47,7 +47,7 @@ const FETCH_POSTS_QUERY = gql`
   }
 `;
 
-export default function Home() {
+export default function Usersearch() {
   const [error, seterror] = React.useState(undefined);
   const addNewPost = (event) => {
     setpost({ ...post, body: event.target.value });
@@ -82,9 +82,27 @@ export default function Home() {
 
   return (
     <Container maxWidth="sm">
-
-
       <div>
+        <Card
+          sx={{
+            maxWidth: 700,
+            marginBottom: 5,
+            marginTop: 5,
+            paddingRight: 1,
+          }}
+        >
+          <CardHeader
+            avatar={
+              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                P
+              </Avatar>
+            }
+            title={user.name}
+            subheader={user.username}
+          />
+        
+        </Card>
+
         <Card
           sx={{
             maxWidth: 700,
@@ -139,8 +157,6 @@ export default function Home() {
               </Button>
             </Stack>
           </Box>
-
-        
         </Card>
       </div>
       <div mt={100}>
