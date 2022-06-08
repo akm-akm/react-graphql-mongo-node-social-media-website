@@ -125,10 +125,10 @@ module.exports = {
       return suser;
     },
 
-    register: async (_, { name, age, username, email, password }) => {
+    register: async (_, { name, dOB, username, email, password }) => {
       if (
         name.trim() === "" ||
-        age.trim() === "" ||
+        dOB.trim() === "" ||
         username.trim() === "" ||
         !validate.isEmail(email.trim()) ||
         password.trim() === ""
@@ -143,7 +143,7 @@ module.exports = {
       const newUser = new User({
         username,
         name,
-        age,
+        dOB,
         email,
         password,
         createdAt: new Date().toISOString(),
@@ -155,7 +155,7 @@ module.exports = {
         {
           id: result.id,
           email: result.email,
-          name: user.name,
+          name: result.name,
           username: result.username,
         },
         process.env.JWTSECRET,

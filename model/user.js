@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema({
   accountPrivacy: {
     type: String,
     required: true,
+    default: true,
   },
   password: {
     type: String,

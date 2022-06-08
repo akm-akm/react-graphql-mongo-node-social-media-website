@@ -2,7 +2,6 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -16,7 +15,7 @@ import MuiAlert from "@mui/material/Alert";
 import { Stack } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import { useHistory } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 const theme = createTheme();
 
 export default function Login() {
@@ -42,21 +41,20 @@ export default function Login() {
       history.push("/");
     },
     onError(err) {
-      console.log(err)
+      console.log(err);
       seterror(err.graphQLErrors[0].message);
       setOpen(true);
     },
     variables: value,
   });
 
-  
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    console.log(value);
     loginuser();
   };
 
@@ -153,12 +151,14 @@ const LOGIN = gql`
     login(email: $email, password: $password) {
       id
       username
+      name
       email
-      password
+      dOB
       createdAt
       token
-      name
-      age
+      friendList {
+        username
+      }
     }
   }
 `;

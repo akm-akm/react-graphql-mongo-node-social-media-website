@@ -2,7 +2,7 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
+import { Link } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -17,9 +17,8 @@ import { Stack } from "@mui/material";
 import { AuthContext } from "../context/AuthContext";
 import { useHistory } from "react-router-dom";
 import DateAdapter from "@mui/lab/AdapterDateFns";
-import { DatePicker } from "@mui/lab";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-
+import { DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 const theme = createTheme();
 
 export default function Register() {
@@ -51,6 +50,7 @@ export default function Register() {
     },
     onError(err) {
       seterror(err.graphQLErrors[0].message);
+      console.log(err);
       setOpen(true);
     },
     variables: value,
@@ -61,7 +61,7 @@ export default function Register() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    console.log(value);
     addUser();
   };
 
@@ -119,28 +119,24 @@ export default function Register() {
                   label="Username"
                 />
               </Grid>
-              <LocalizationProvider dateAdapter={DateAdapter}>
-                <DatePicker
-                  label="Basic example"
-                  value={value.dOB}
-                  onChange={handleChange}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-
               <Grid item xs={12}>
-                <TextField
-                  autoComplete="given-name"
-                  name="age"
-                  value={value.age}
-                  required
-                  type="number"
-                  fullWidth
-                  id="age"
-                  onChange={handleChange}
-                  label="Age"
-                />
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                  <DatePicker
+                    label="Birthday"
+                    name="dOB"
+                    id="dOB"
+                    value={value.dOB}
+                    onChange={(event) => {
+                      setvalue({
+                        ...value,
+                        dOB: event.toString(),
+                      });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
               </Grid>
+
               <Grid item xs={12}>
                 <TextField
                   required
@@ -211,24 +207,23 @@ export default function Register() {
 const REGISTER = gql`
   mutation Register(
     $name: String!
-    $age: String!
+    $dOB: String!
     $username: String!
     $email: String!
     $password: String!
   ) {
     register(
       name: $name
-      age: $age
+      dOB: $dOB
       username: $username
       email: $email
       password: $password
     ) {
-      name
       id
       username
+      name
       email
-      age
-      password
+      dOB
       createdAt
       token
     }

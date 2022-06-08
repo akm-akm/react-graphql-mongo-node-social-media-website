@@ -31,10 +31,8 @@ module.exports = gql`
     name: String!
     email: String!
     friendList: [Username]
-    age: String!
     dOB: String
     createdAt: String!
-    password: String!
     token: String!
   }
   type RegisterInput {
@@ -52,7 +50,7 @@ module.exports = gql`
   type Mutation {
     register(
       name: String!
-      age: String!
+      dOB: String!
       username: String!
       email: String!
       password: String!
