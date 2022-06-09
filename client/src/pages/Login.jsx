@@ -36,7 +36,6 @@ export default function Login() {
 
   const [loginuser, { loading }] = useMutation(LOGIN, {
     update(_, { data: { login: useData } }) {
-      console.log(useData);
       context.login(useData);
       history.push("/");
     },

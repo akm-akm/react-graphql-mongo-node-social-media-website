@@ -17,13 +17,22 @@ module.exports = gql`
   }
   type Post {
     id: ID!
-    username: String!
+    username: String
     body: String!
     createdAt: String!
     comment: [Comment!]!
     commentCount: Int!
     like: [Like!]
     likeCount: Int!
+  }
+  type UserSearch {
+    id: ID!
+    username: String!
+    name: String!
+    email: String!
+    friendList: [Username]
+    dOB: String
+    createdAt: String!
   }
   type User {
     id: ID!
@@ -35,6 +44,19 @@ module.exports = gql`
     createdAt: String!
     token: String!
   }
+  type Profile {
+    id: ID!
+    username: String!
+    name: String!
+    email: String!
+    friendList: [Username]
+    pendingFriendRequest: [Username]
+    pendingSentFriendRequest: [Username]
+    blockedUser: [Username]
+    accountPrivacy: Boolean
+    dOB: String
+    createdAt: String!
+  }
   type RegisterInput {
     username: String!
     password: String!
@@ -44,8 +66,9 @@ module.exports = gql`
   type Query {
     getPosts: [Post]
     getPost(postID: ID!): Post
-    getUsers(name: String!): [User]!
-    getUser(username: String!): User!
+    getProfile: Profile
+    getUsers(name: String!): [UserSearch]!
+    getUser(username: String!): UserSearch!
   }
   type Mutation {
     register(
@@ -63,9 +86,10 @@ module.exports = gql`
     deleteComment(commentID: ID!, postID: ID!): Post!
     createLike(postID: ID!): Post!
     subscrption: Boolean!
-    sendFriendRequest(username: String!): User!
-    rejectFriendRequest(username: String!): User!
-    acceptFriendRequest(username: String!): User!
-    blockUser(username: String!): User!
+    sendFriendRequest(username: String!): Profile!
+    rejectFriendRequest(username: String!): Profile!
+    revertFriendRequest(username: String!): Profile!
+    acceptFriendRequest(username: String!): Profile!
+    blockUser(username: String!): Profile!
   }
 `;

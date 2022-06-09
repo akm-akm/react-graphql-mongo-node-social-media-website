@@ -5,8 +5,9 @@ const checkAuth = require("../../util/check-auth");
 const jwt = require("jsonwebtoken");
 module.exports = {
   Query: {
-    getUsers: async (_, { name }) => {
+    getUsers: async (_, { name }, context) => {
       console.log(name);
+      const { username } = checkAuth(context);
       try {
         const users = await User.find({
           $or: [
@@ -34,6 +35,15 @@ module.exports = {
       try {
         const user = await User.findOne({ username });
         return user;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    getProfile: async (_, __, context) => {
+      const { username } = checkAuth(context);
+      try {
+        const profile = await User.findOne({ username });
+        return profile;
       } catch (err) {
         console.log(err);
       }
@@ -72,74 +82,127 @@ module.exports = {
       };
     },
     sendFriendRequest: async (_, { username }, context) => {
-      const user = checkAuth(context);
+      const { username: myusername } = checkAuth(context);
 
       const suser = await User.findOne({ username });
+      const profile = await User.findOne({ myusername });
       if (!suser) {
         throw new Error("User not found");
       }
       if (suser) {
-        suser.comment.unshift({
-          username: user.username,
+        suser.pendingFriendRequest.unshift({
+          username: myusername,
+        });
+        profile.pendingSentFriendRequest.unshift({
+          username,
         });
       }
       await suser.save();
-      return suser;
+      await profile.save();
+      return profile;
     },
 
     acceptFriendRequest: async (_, { username }, context) => {
-      const user = checkAuth(context);
+      const { username: myusername } = checkAuth(context);
       const suser = await User.findOne({ username });
+      const profile = await User.findOne({ myusername });
+
       if (!suser) {
         throw new Error("User not found");
       }
       if (
-        suser.pendingFriendRequest.find(
+        profile.pendingFriendRequest.find(
           (pending) => pending.username === username
         )
       ) {
         suser.friendList.unshift({
-          username: user.username,
+          username: myusername,
         });
-        suser.pendingFriendRequest = suser.pendingFriendRequest.filter(
+        suser.pendingSentFriendRequest = suser.pendingSentFriendRequest.filter(
+          (pending) => pending.username !== myusername
+        );
+        profile.friendList.unshift({
+          username,
+        });
+        profile.pendingFriendRequest = profile.pendingFriendRequest.filter(
           (pending) => pending.username !== username
         );
       }
       await suser.save();
-      return suser;
+      await profile.save();
+      return profile;
     },
 
     rejectFriendRequest: async (_, { username }, context) => {
-      const user = checkAuth(context);
+      const { username: myusername } = checkAuth(context);
       const suser = await User.findOne({ username });
+      const profile = await User.findOne({ myusername });
       if (!suser) {
         throw new Error("User not found");
       }
       if (
-        suser.pendingFriendRequest.find(
+        profile.pendingFriendRequest.find(
           (pending) => pending.username === username
         )
       ) {
-        suser.pendingFriendRequest = suser.pendingFriendRequest.filter(
+        profile.pendingFriendRequest = profile.pendingFriendRequest.filter(
           (pending) => pending.username !== username
+        );
+        suser.pendingSentFriendRequest = suser.pendingSentFriendRequest.filter(
+          (pending) => pending.username !== myusername
         );
       }
       await suser.save();
-      return suser;
+      await profile.save();
+      return profile;
+    },
+    revertFriendRequest: async (_, { username }, context) => {
+      const { username: myusername } = checkAuth(context);
+      const suser = await User.findOne({ username });
+      const profile = await User.findOne({ myusername });
+      if (!suser) {
+        throw new Error("User not found");
+      }
+      if (true) {
+        profile.pendingFriendRequest = profile.pendingFriendRequest.filter(
+          (pending) => pending.username !== username
+        );
+        profile.pendingSentFriendRequest =
+          profile.pendingSentFriendRequest.filter(
+            (pending) => pending.username !== username
+          );
+        profile.friendList = profile.friendList.filter(
+          (pending) => pending.username !== username
+        );
+
+        suser.pendingFriendRequest = suser.pendingFriendRequest.filter(
+          (pending) => pending.username !== myusername
+        );
+        suser.pendingSentFriendRequest = suser.pendingSentFriendRequest.filter(
+          (pending) => pending.username !== myusername
+        );
+        suser.friendList = suser.friendList.filter(
+          (pending) => pending.username !== myusername
+        );
+      }
+      await suser.save();
+      await profile.save();
+      return profile;
     },
     blockUser: async (_, { username }, context) => {
-      const user = checkAuth(context);
+      const { username: myusername } = checkAuth(context);
       const suser = await User.findOne({ username });
+      const profile = await User.findOne({ myusername });
       if (!suser) {
         throw new Error("User not found");
       }
       if (suser) {
-        suser.blockedUser.unshift({
-          username: user.username,
+        profile.blockedUser.unshift({
+          username,
         });
       }
-      await suser.save();
-      return suser;
+      await profile.save();
+      return profile;
     },
 
     register: async (_, { name, dOB, username, email, password }) => {
@@ -175,11 +238,12 @@ module.exports = {
           name: result.name,
           username: result.username,
         },
-        process.env.JWTSECRET,
-        {
-          expiresIn: "10d",
-        }
+        process.env.JWTSECRET
       );
+      result.token.unshift({
+        token,
+      });
+      await result.save();
       return {
         id: result.id,
         ...result._doc,

@@ -5,7 +5,7 @@ const { AuthenticationError } = require("apollo-server");
 module.exports = (context) => {
   const authHeader = context.req.headers.authorization;
   if (authHeader) {
-      const token = authHeader.split("Bearer ")[1];
+    const token = authHeader.split("Bearer ")[1];
     if (token) {
       try {
         const user = jwt.verify(token, process.env.JWTSECRET);
@@ -18,5 +18,3 @@ module.exports = (context) => {
   }
   throw new Error("Authorization header must be provided");
 };
-
-
