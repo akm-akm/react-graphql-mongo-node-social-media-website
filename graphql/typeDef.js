@@ -7,7 +7,7 @@ module.exports = gql`
     username: String!
     createdAt: String!
   }
-  type Username{
+  type Username {
     username: String!
   }
   type Like {
@@ -44,7 +44,7 @@ module.exports = gql`
   type Query {
     getPosts: [Post]
     getPost(postID: ID!): Post
-    getUsers: [User]!
+    getUsers(name: String!): [User]!
     getUser(username: String!): User!
   }
   type Mutation {

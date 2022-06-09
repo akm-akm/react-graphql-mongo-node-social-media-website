@@ -16,7 +16,10 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
 import { AuthContext } from "../../context/AuthContext";
+import { useHistory } from "react-router-dom";
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
   borderRadius: theme.shape.borderRadius,
@@ -65,6 +68,8 @@ export default function Header() {
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const { user, logout } = React.useContext(AuthContext);
+  const history = useHistory();
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -83,6 +88,38 @@ export default function Header() {
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+  const [value, setvalue] = React.useState({
+    name: "",
+  });
+  const [error, seterror] = React.useState(undefined);
+  const handleChange = (event) => {
+    console.log(event.target.name);
+    setvalue({
+      ...value,
+      name: event.target.value,
+    });
+  };
+
+  const searchUser = () => {
+    console.log(value.name);
+    if (value.name === "") {
+      seterror("Please enter a name");
+    } else {
+      seterror(undefined);
+      history.replace(`/search/${value.name}`);
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (value.name === "") {
+      seterror("Please enter a name");
+    } else {
+      seterror(undefined);
+      setAnchorElNav(null);
+      searchUser();
+    }
   };
 
   const menuId = "primary-search-account-menu";
@@ -181,15 +218,12 @@ export default function Header() {
           </Typography>
           {user ? (
             <>
-              <Search>
-                <SearchIconWrapper>
+              <IconButton aria-label="like">
+                <Link to="/search">
                   <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search people"
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </Search>
+                </Link>
+              </IconButton>
+
               <Box sx={{ flexGrow: 1 }} />
               <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 <Button
@@ -202,11 +236,9 @@ export default function Header() {
                 </Button>
                 <Button
                   name="Login"
-               
                   variant={activeItem === "friends" ? "contained" : "outlined"}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                
                   Login
                 </Button>
                 <Button
@@ -280,3 +312,19 @@ export default function Header() {
     </Box>
   );
 }
+
+const SEARCH_USER = gql`
+  query GetUsers($name: String!) {
+    getUsers(name: $name) {
+      id
+      username
+      name
+      email
+      friendList {
+        username
+      }
+      dOB
+      createdAt
+    }
+  }
+`;

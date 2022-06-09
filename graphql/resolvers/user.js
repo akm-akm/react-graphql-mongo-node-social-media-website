@@ -5,22 +5,39 @@ const checkAuth = require("../../util/check-auth");
 const jwt = require("jsonwebtoken");
 module.exports = {
   Query: {
-    getUsers: async () => {
+    getUsers: async (_, { name }) => {
+      console.log(name);
       try {
-        const users = await User.find();
+        const users = await User.find({
+          $or: [
+            {
+              name: {
+                $regex: name,
+                $options: "i",
+              },
+            },
+            {
+              username: {
+                $regex: name,
+                $options: "i",
+              },
+            },
+          ],
+        }).limit(20);
+        console.log(users);
         return users;
       } catch (err) {
         console.log(err);
       }
     },
-    getUser: async (_, {username}) => {
+    getUser: async (_, { username }) => {
       try {
         const user = await User.findOne({ username });
         return user;
       } catch (err) {
         console.log(err);
       }
-    }
+    },
   },
   Mutation: {
     login: async (_, { email, password }) => {

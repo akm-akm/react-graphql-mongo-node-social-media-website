@@ -10,6 +10,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/protectedRoute";
 import AuthRoute from "./utils/authRoute";
 import Profile from "./pages/profile";
+import Usersearch from "./pages/Usersearch.jsx";
 function App() {
   return (
     <AuthProvider>
@@ -17,7 +18,7 @@ function App() {
         <Header />
         <Switch>
           <ProtectedRoute exact path="/" component={Home} />
-          <ProtectedRoute exact path="/profile/:username" component={Profile} />
+          <ProtectedRoute exact path="/search" component={Usersearch} />
           <AuthRoute exact path="/login" component={Login} />
           <AuthRoute exact path="/register" component={Register} />
         </Switch>

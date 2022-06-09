@@ -54,7 +54,6 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(value);
     loginuser();
   };
 

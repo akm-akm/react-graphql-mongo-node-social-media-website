@@ -23,61 +23,46 @@ import LocationOn from "@mui/icons-material/LocationOn";
 import Edit from "@mui/icons-material/Edit";
 import { AuthContext } from "../context/AuthContext";
 
-const FETCH_POSTS_QUERY = gql`
-  {
-    getPosts {
+const SEARCH_USER = gql`
+  query GetUsers($name: String!) {
+    getUsers(name: $name) {
       id
       username
-      body
+      name
+      email
+      friendList {
+        username
+      }
+      dOB
       createdAt
-      commentCount
-      likeCount
-      comment {
-        body
-        id
-        username
-        createdAt
-      }
-      like {
-        id
-        username
-        createdAt
-      }
     }
   }
 `;
 
-export default function Home() {
-  const [error, seterror] = React.useState(undefined);
-  const addNewPost = (event) => {
-    setpost({ ...post, body: event.target.value });
-  };
-  const [post, setpost] = useState({
-    body: "",
-  });
-  const [addPost, { loadingCreatePost }] = useMutation(CREATE_POST, {
-    update(proxy, { data: { createPost: post } }) {
-      const data = proxy.readQuery({ query: FETCH_POSTS_QUERY });
-      data.getPosts = [post, ...data.getPosts];
-      proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
-      setpost({ body: "" });
-    },
-    onError(err) {
-      console.log(typeof { post });
-      seterror(err.graphQLErrors[0]);
-      console.log(error);
-    },
-    variables: post,
-  });
+export default function Search() {
   const { user } = React.useContext(AuthContext);
+  const [error, seterror] = React.useState(undefined);
+  const [value, setValue] = useState({
+    name: '',
+    data: null,
+  });
 
-  const uploadNewPost = (event) => {
-    console.log(post);
-    event.preventDefault();
-    addPost();
+  const { loading, data, errors } = useQuery(
+    SEARCH_USER,
+    {
+      variables: {
+        name: value.name,
+      },
+    },
+    [value.name]
+  );
+
+  const handleChange = (event) => {
+    setValue({ ...value, name: event.target.value });
+    console.log(user)
   };
 
-  const { loading, errorfetch, data } = useQuery(FETCH_POSTS_QUERY);
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -92,13 +77,8 @@ export default function Home() {
           }}
         >
           <CardHeader
-            avatar={
-              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                P
-              </Avatar>
-            }
-            title={user.name}
-            subheader={user.username}
+            title="Search Users"
+            /*subheader={user.username}*/
           />
           <Box
             component="form"
@@ -111,14 +91,36 @@ export default function Home() {
             <div>
               <TextField
                 id="outlined-multiline-flexible"
-                label="Write Something"
-                multiline
-                name="body"
-                maxRows={9}
-                value={post.body}
-                onChange={addNewPost}
+                label="Search "
+                autoFocus
+                name="name"
+                value={value.name}
+                onChange={handleChange}
               />
             </div>
+          </Box>
+        </Card>
+      </div>
+      <div mt={100}>
+        {data.getUsers.map((result) => (
+          <Card
+            key={result.id}
+            sx={{
+              maxWidth: 700,
+              marginBottom: 5,
+              marginTop: 5,
+              paddingRight: 1,
+            }}
+          >
+            <CardHeader
+              avatar={
+                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                  {result.username[0]}
+                </Avatar>
+              }
+              title={result.name}
+              subheader={result.username}
+            />
             <Stack
               direction="row"
               style={{
@@ -127,46 +129,22 @@ export default function Home() {
             >
               <Button
                 mt={100}
-                onClick={uploadNewPost}
-                type="submit"
-                disabled={post.body.trim() === ""}
+             /*   onClick={uploadNewPost}
+               */ type="submit"
                 variant="contained"
                 endIcon={<SendIcon />}
               >
                 Post
               </Button>
             </Stack>
-          </Box>
-        </Card>
-      </div>
-      <div mt={100}>
-        {data.getPosts.map((post) => (
-          <Post key={post.id} post={post} />
+            <CardActions disableSpacing>
+              <IconButton aria-label="add to favorites">
+                <FavoriteIcon />
+              </IconButton>
+            </CardActions>
+          </Card>
         ))}
       </div>
     </Container>
   );
 }
-
-const CREATE_POST = gql`
-  mutation CreatePost($body: String!) {
-    createPost(body: $body) {
-      id
-      username
-      body
-      createdAt
-      comment {
-        id
-        body
-        username
-        createdAt
-      }
-      commentCount
-      like {
-        id
-        username
-      }
-      likeCount
-    }
-  }
-`;
