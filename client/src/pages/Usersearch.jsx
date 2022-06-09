@@ -43,7 +43,7 @@ export default function Search() {
   const { user } = React.useContext(AuthContext);
   const [error, seterror] = React.useState(undefined);
   const [value, setValue] = useState({
-    name: '',
+    name: "",
     data: null,
   });
 
@@ -59,9 +59,8 @@ export default function Search() {
 
   const handleChange = (event) => {
     setValue({ ...value, name: event.target.value });
-    console.log(user)
+    console.log(user);
   };
-
 
   if (loading) return <p>Loading...</p>;
 
@@ -125,23 +124,19 @@ export default function Search() {
               direction="row"
               style={{
                 float: "right",
+                paddingBottom: "10px",
               }}
             >
               <Button
                 mt={100}
-             /*   onClick={uploadNewPost}
-               */ type="submit"
+                /*   onClick={uploadNewPost}
+                 */ type="submit"
                 variant="contained"
-                endIcon={<SendIcon />}
+                startIcon={<SendIcon />}
               >
-                Post
+                Add friend
               </Button>
             </Stack>
-            <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-            </CardActions>
           </Card>
         ))}
       </div>
