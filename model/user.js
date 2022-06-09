@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
   },
   accountPrivacy: {
-    type: String,
+    type: Boolean,
     required: true,
     default: true,
   },
@@ -75,6 +75,18 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  pendingSentFriendRequest: [
+    {
+      createdAt: {
+        type: String,
+        trim: true,
+        default: Date.now(),
+      },
+      username: {
+        type: String,
+      },
+    },
+  ],
   blockedUser: [
     {
       username: {
@@ -89,7 +101,6 @@ const userSchema = new mongoose.Schema({
     type: Buffer,
   },
 });
-
 
 userSchema.virtual("Post", {
   ref: "Post",
