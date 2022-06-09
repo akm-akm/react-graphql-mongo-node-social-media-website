@@ -123,6 +123,7 @@ export default function Home() {
               direction="row"
               style={{
                 float: "right",
+                paddingBottom: "10px",
               }}
             >
               <Button

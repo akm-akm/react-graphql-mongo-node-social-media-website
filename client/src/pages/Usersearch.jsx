@@ -22,7 +22,7 @@ import { grey } from "@mui/material/colors";
 import LocationOn from "@mui/icons-material/LocationOn";
 import Edit from "@mui/icons-material/Edit";
 import { AuthContext } from "../context/AuthContext";
-
+import FriendRequest from "../components/FriendRequest";
 const SEARCH_USER = gql`
   query GetUsers($name: String!) {
     getUsers(name: $name) {
@@ -38,6 +38,31 @@ const SEARCH_USER = gql`
     }
   }
 `;
+const GET_SELF_PROFILE = gql`
+  query GetProfile {
+    getProfile {
+      id
+      username
+      name
+      email
+      friendList {
+        username
+      }
+      pendingFriendRequest {
+        username
+      }
+      pendingSentFriendRequest {
+        username
+      }
+      blockedUser {
+        username
+      }
+      accountPrivacy
+      dOB
+      createdAt
+    }
+  }
+`;
 
 export default function Search() {
   const { user } = React.useContext(AuthContext);
@@ -46,8 +71,13 @@ export default function Search() {
     name: "",
     data: null,
   });
+  const { loadings, errorfetch, data: Profile } = useQuery(GET_SELF_PROFILE);
 
-  const { loading, data, errors } = useQuery(
+  const {
+    loading,
+    data: datas,
+    errors,
+  } = useQuery(
     SEARCH_USER,
     {
       variables: {
@@ -62,7 +92,7 @@ export default function Search() {
     console.log(user);
   };
 
-  if (loading) return <p>Loading...</p>;
+  // if (loading || loadings || value.name.length < 1) return <p>Loading...</p>;
 
   return (
     <Container maxWidth="sm">
@@ -75,10 +105,7 @@ export default function Search() {
             paddingRight: 1,
           }}
         >
-          <CardHeader
-            title="Search Users"
-            /*subheader={user.username}*/
-          />
+          <CardHeader title="Search Users" />
           <Box
             component="form"
             sx={{
@@ -101,44 +128,42 @@ export default function Search() {
         </Card>
       </div>
       <div mt={100}>
-        {data.getUsers.map((result) => (
-          <Card
-            key={result.id}
-            sx={{
-              maxWidth: 700,
-              marginBottom: 5,
-              marginTop: 5,
-              paddingRight: 1,
-            }}
-          >
-            <CardHeader
-              avatar={
-                <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-                  {result.username[0]}
-                </Avatar>
-              }
-              title={result.name}
-              subheader={result.username}
-            />
-            <Stack
-              direction="row"
-              style={{
-                float: "right",
-                paddingBottom: "10px",
-              }}
-            >
-              <Button
-                mt={100}
-                /*   onClick={uploadNewPost}
-                 */ type="submit"
-                variant="contained"
-                startIcon={<SendIcon />}
+        {!(loading || loadings || value.name.length > 1)
+          ? datas.getUsers.map((result) => (
+              <Card
+                key={result.id}
+                sx={{
+                  maxWidth: 700,
+                  marginBottom: 5,
+                  marginTop: 5,
+                  paddingRight: 1,
+                }}
               >
-                Add friend
-              </Button>
-            </Stack>
-          </Card>
-        ))}
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                      {result.username[0]}
+                    </Avatar>
+                  }
+                  title={result.name}
+                  subheader={result.username}
+                />
+                <Stack
+                  direction="row"
+                  style={{
+                    float: "right",
+                    paddingBottom: "10px",
+                  }}
+                >
+                  <FriendRequest
+                    username={result.username}
+                    profile={Profile}
+                    key={result.id}
+                  />
+                </Stack>
+              </Card>
+            ))
+          : null}
       </div>
     </Container>
   );
