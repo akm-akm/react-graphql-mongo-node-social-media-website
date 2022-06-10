@@ -70,6 +70,10 @@ export default function Header() {
   const { user, logout } = React.useContext(AuthContext);
   const history = useHistory();
 
+  const exit = () => {
+    handleMenuClose();
+    logout();
+  };
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -89,39 +93,9 @@ export default function Header() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-  const [value, setvalue] = React.useState({
-    name: "",
-  });
-  const [error, seterror] = React.useState(undefined);
-  const handleChange = (event) => {
-    console.log(event.target.name);
-    setvalue({
-      ...value,
-      name: event.target.value,
-    });
+  const searchPage = () => {
+    history.replace("/search");
   };
-
-  const searchUser = () => {
-    console.log(value.name);
-    if (value.name === "") {
-      seterror("Please enter a name");
-    } else {
-      seterror(undefined);
-      history.replace(`/search/${value.name}`);
-    }
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (value.name === "") {
-      seterror("Please enter a name");
-    } else {
-      seterror(undefined);
-      setAnchorElNav(null);
-      searchUser();
-    }
-  };
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -139,7 +113,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={logout}>Logout</MenuItem>
+      <MenuItem onClick={exit}>Logout</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
     </Menu>
   );
@@ -218,47 +192,19 @@ export default function Header() {
           </Typography>
           {user ? (
             <>
-              <IconButton aria-label="like">
-                <Link to="/search">
-                  <SearchIcon />
-                </Link>
-              </IconButton>
-
               <Box sx={{ flexGrow: 1 }} />
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                <Button
-                  name="home"
-                  variant={activeItem === "home" ? "contained" : "outlined"}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  Home
-                </Button>
-                <Button
-                  name="Login"
-                  variant={activeItem === "friends" ? "contained" : "outlined"}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  Login
-                </Button>
-                <Button
-                  name="chat"
-                  variant={activeItem === "chat" ? "contained" : "outlined"}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      color: "white",
-                    }}
-                    to="/register"
-                  >
-                    Register
-                  </Link>
-                </Button>
-              </Box>
+              <Box
+                sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}
+              ></Box>
               <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <IconButton
+                  onClick={searchPage}
+                  size="large"
+                  aria-label="show 4 new mails"
+                  color="inherit"
+                >
+                  <SearchIcon />
+                </IconButton>
                 <IconButton
                   size="large"
                   aria-label="show 4 new mails"
