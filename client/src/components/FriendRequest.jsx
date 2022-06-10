@@ -10,20 +10,118 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { ButtonGroup } from "@mui/material";
 
+const GET_SELF_PROFILE = gql`
+  query GetProfile {
+    getProfile {
+      friendList {
+        username
+      }
+      pendingFriendRequest {
+        username
+      }
+      pendingSentFriendRequest {
+        username
+      }
+      blockedUser {
+        username
+      }
+    }
+  }
+`;
+
 export default function FriendRequest({ username, profile }) {
   const profilee = profile.getProfile;
+  const [acceptFriendRequest] = useMutation(ACCEPT_FRIEND_REQUEST, {
+    variables: {
+      username: username,
+    },
+    update(proxy, result) {
+      const data = proxy.readQuery({
+        query: GET_SELF_PROFILE,
+      });
+      data.getProfile = result.data.acceptFriendRequest;
+      proxy.writeQuery({
+        query: GET_SELF_PROFILE,
+        data,
+      });
+    },
+  });
+
+  const [sendFriendRequest] = useMutation(SEND_FRIEND_REQUEST, {
+    variables: {
+      username: username,
+    },
+    update(proxy, result) {
+      console.log(result);
+      const data = proxy.readQuery({
+        query: GET_SELF_PROFILE,
+      });
+
+      data.getProfile = result.data.sendFriendRequest;
+      proxy.writeQuery({
+        query: GET_SELF_PROFILE,
+        data,
+      });
+    },
+  });
+
+  const [rejectFriendRequest] = useMutation(REJECT_FRIEND_REQUEST, {
+    variables: {
+      username: username,
+    },
+    update(proxy, result) {
+      const data = proxy.readQuery({
+        query: GET_SELF_PROFILE,
+      });
+      data.getProfile = result.data.rejectFriendRequest;
+      proxy.writeQuery({
+        query: GET_SELF_PROFILE,
+        data,
+      });
+    },
+  });
+  const [revertFriendRequest] = useMutation(REVERT_FRIEND_REQUEST, {
+    variables: {
+      username: username,
+    },
+    update(proxy, result) {
+      const data = proxy.readQuery({
+        query: GET_SELF_PROFILE,
+      });
+
+      data.getProfile = result.data.revertFriendRequest;
+      proxy.writeQuery({
+        query: GET_SELF_PROFILE,
+        data,
+      });
+    },
+  });
+  const [blockUser] = useMutation(BLOCK_USER, {
+    variables: {
+      username: username,
+    },
+    update(proxy, result) {
+      const data = proxy.readQuery({
+        query: GET_SELF_PROFILE,
+      });
+      data.getProfile = result.data.blockUser;
+      proxy.writeQuery({
+        query: GET_SELF_PROFILE,
+        data,
+      });
+    },
+  });
+
   if (profilee.friendList.find((x) => x.username === username)) {
     return (
       <Button
         mt={100}
-        /*  
-       onClick={uploadNewPost}
-       */
+        onClick={revertFriendRequest}
         type="submit"
         variant="contained"
-        startIcon={<PersonRemoveIcon />}
+        startIcon={<CheckCircleIcon />}
       >
-        remove friend
+        friends
       </Button>
     );
   }
@@ -35,25 +133,21 @@ export default function FriendRequest({ username, profile }) {
       >
         <Button
           mt={100}
-          /*  
-         onClick={uploadNewPost}
-         */
+          onClick={acceptFriendRequest}
           type="submit"
           variant="contained"
           startIcon={<PersonAddIcon />}
         >
-          accept request
+          accept
         </Button>
         <Button
           mt={100}
-          /*  
-         onClick={uploadNewPost}
-         */
+          onClick={rejectFriendRequest}
           type="submit"
           variant="contained"
           startIcon={<CancelIcon />}
         >
-          reject request
+          reject
         </Button>
       </ButtonGroup>
     );
@@ -62,14 +156,12 @@ export default function FriendRequest({ username, profile }) {
     return (
       <Button
         mt={100}
-        /*
-          onClick={uploadNewPost}
-          */
+        onClick={revertFriendRequest}
         type="submit"
         variant="contained"
         startIcon={<PendingIcon />}
       >
-        pending
+        request sent
       </Button>
     );
   } else if (profilee.blockedUser.find((x) => x.username === username)) {
@@ -90,9 +182,7 @@ export default function FriendRequest({ username, profile }) {
     return (
       <Button
         mt={100}
-        /*  
-       onClick={uploadNewPost}
-       */
+        onClick={sendFriendRequest}
         type="submit"
         variant="contained"
         startIcon={<PersonAddIcon />}
@@ -105,7 +195,15 @@ export default function FriendRequest({ username, profile }) {
 const BLOCK_USER = gql`
   mutation BlockUser($username: String!) {
     blockUser(username: $username) {
-      id
+      friendList {
+        username
+      }
+      pendingFriendRequest {
+        username
+      }
+      pendingSentFriendRequest {
+        username
+      }
       blockedUser {
         username
       }
@@ -116,9 +214,16 @@ const BLOCK_USER = gql`
 const SEND_FRIEND_REQUEST = gql`
   mutation SendFriendRequest($username: String!) {
     sendFriendRequest(username: $username) {
-      id
-
+      friendList {
+        username
+      }
+      pendingFriendRequest {
+        username
+      }
       pendingSentFriendRequest {
+        username
+      }
+      blockedUser {
         username
       }
     }
@@ -128,18 +233,6 @@ const SEND_FRIEND_REQUEST = gql`
 const REJECT_FRIEND_REQUEST = gql`
   mutation RejectFriendRequest($username: String!) {
     rejectFriendRequest(username: $username) {
-      id
-
-      pendingFriendRequest {
-        username
-      }
-    }
-  }
-`;
-const REVERT_FRIEND_REQUEST = gql`
-  mutation RevertFriendRequest($username: String!) {
-    revertFriendRequest(username: $username) {
-      id
       friendList {
         username
       }
@@ -149,6 +242,27 @@ const REVERT_FRIEND_REQUEST = gql`
       pendingSentFriendRequest {
         username
       }
+      blockedUser {
+        username
+      }
+    }
+  }
+`;
+const REVERT_FRIEND_REQUEST = gql`
+  mutation RevertFriendRequest($username: String!) {
+    revertFriendRequest(username: $username) {
+      friendList {
+        username
+      }
+      pendingFriendRequest {
+        username
+      }
+      pendingSentFriendRequest {
+        username
+      }
+      blockedUser {
+        username
+      }
     }
   }
 `;
@@ -156,12 +270,16 @@ const REVERT_FRIEND_REQUEST = gql`
 const ACCEPT_FRIEND_REQUEST = gql`
   mutation AcceptFriendRequest($username: String!) {
     acceptFriendRequest(username: $username) {
-      id
-
       friendList {
         username
       }
       pendingFriendRequest {
+        username
+      }
+      pendingSentFriendRequest {
+        username
+      }
+      blockedUser {
         username
       }
     }

@@ -41,10 +41,6 @@ const SEARCH_USER = gql`
 const GET_SELF_PROFILE = gql`
   query GetProfile {
     getProfile {
-      id
-      username
-      name
-      email
       friendList {
         username
       }
@@ -57,9 +53,6 @@ const GET_SELF_PROFILE = gql`
       blockedUser {
         username
       }
-      accountPrivacy
-      dOB
-      createdAt
     }
   }
 `;
@@ -89,7 +82,6 @@ export default function Search() {
 
   const handleChange = (event) => {
     setValue({ ...value, name: event.target.value });
-    console.log(user);
   };
 
   // if (loading || loadings || value.name.length < 1) return <p>Loading...</p>;
@@ -128,7 +120,7 @@ export default function Search() {
         </Card>
       </div>
       <div mt={100}>
-        {!(loading || loadings || value.name.length > 1)
+        {!((loading || loadings) /*|| value.name.length < 1*/)
           ? datas.getUsers.map((result) => (
               <Card
                 key={result.id}

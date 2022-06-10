@@ -9,7 +9,7 @@ module.exports = {
       console.log(name);
       const { username } = checkAuth(context);
       try {
-        const users = await User.find({
+        let users = await User.find({
           $or: [
             {
               name: {
@@ -25,7 +25,7 @@ module.exports = {
             },
           ],
         }).limit(20);
-        console.log(users);
+        users = users.filter((x) => x.username !== username);
         return users;
       } catch (err) {
         console.log(err);
